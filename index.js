@@ -28,8 +28,17 @@ app.get("/urls", (req, res) => {
 })
 
 app.post("/urls", (req, res) => {
+  const longURL = req.body.longURL
+  if (!longURL) {
+    res.send('Error: invalid URL')
+    return
+  }
+
+  const id = generateUid()
+  urlDatabase[id] = longURL
+
   console.log(req.body)
-  res.send("Ok")
+  res.redirect(`/urls/${id}`)
 })
 
 app.get("/urls/new", (req, res) => {
