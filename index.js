@@ -39,6 +39,14 @@ const getUserByCookie = function(req) {
   return users[userId]
 }
 
+const getUserByEmail = function(email) {
+  for (let i in users) {
+    if (users[i].email === email)
+      return users[i]
+  }
+  return undefined
+}
+
 app.get("/", (req, res) => {
   res.send("Hello!")
 })
@@ -56,6 +64,17 @@ app.get("/register", (req, res) => {
 
 app.post("/register", (req, res) => {
   const { email, password } = req.body
+
+  if ((!email || email.length === 0) || (!password || password.length === 0)) {
+    res.status(400).send("Error: Invalid username or password")
+    return
+  }
+
+  const existingUser = getUserByEmail(email)
+  if (existingUser) {
+    res.status(400).send("Error: Email already in use")
+    return
+  }
   
   const id = generateUid()
   users[id] = {
