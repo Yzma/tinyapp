@@ -10,6 +10,10 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 }
 
+const generateUid = function() {
+  return Math.floor((1 + Math.random()) * 0x10000).toString(16)
+}
+
 app.get("/", (req, res) => {
   res.send("Hello!")
 })
@@ -29,6 +33,9 @@ app.post("/urls", (req, res) => {
 })
 
 app.get("/urls/new", (req, res) => {
+  const newId = generateUid()
+  console.log(req.body + " " + newId)
+  console.log(req.body + " " + newId)
   res.render("urls_new")
 })
 
