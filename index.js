@@ -55,6 +55,13 @@ app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n")
 })
 
+app.get("/login", (req, res) => {
+  const templateVars = {
+    user: getUserByCookie(req)
+  }
+  res.render("login", templateVars)
+})
+
 app.get("/register", (req, res) => {
   const templateVars = {
     user: getUserByCookie(req)
