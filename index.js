@@ -33,9 +33,6 @@ app.post("/urls", (req, res) => {
 })
 
 app.get("/urls/new", (req, res) => {
-  const newId = generateUid()
-  console.log(req.body + " " + newId)
-  console.log(req.body + " " + newId)
   res.render("urls_new")
 })
 
