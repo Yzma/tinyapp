@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/Yzma/tinyapp/issues"
   },
-  "homepage": "https://github.com/Yzma/tinyapp#readme"
+  "homepage": "https://github.com/Yzma/tinyapp#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
