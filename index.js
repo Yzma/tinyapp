@@ -50,6 +50,12 @@ app.get("/urls/:id", (req, res) => {
   res.render("urls_show", templateVars)
 })
 
+// TODO: Validate if a URL was actually found
+app.get("/u/:id", (req, res) => {
+  const foundURL = urlDatabase[req.params.id]
+  res.redirect(foundURL)
+})
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`)
 })
