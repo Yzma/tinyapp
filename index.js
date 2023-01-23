@@ -30,7 +30,7 @@ const generateUid = function() {
   return Math.floor((1 + Math.random()) * 0x10000).toString(16)
 }
 
-const getUser = function(req) {
+const getUserByCookie = function(req) {
   const userId = req.cookies["user_id"]
   if (!userId) {
     return undefined
@@ -49,7 +49,7 @@ app.get("/hello", (req, res) => {
 
 app.get("/register", (req, res) => {
   const templateVars = {
-    user: getUser(req)
+    user: getUserByCookie(req)
   }
   res.render("register", templateVars)
 })
@@ -76,7 +76,7 @@ app.get("/users", (req, res) => {
 app.get("/urls", (req, res) => {
   const templateVars = {
     urls: urlDatabase,
-    user: getUser(req)
+    user: getUserByCookie(req)
   }
   res.render("urls_index", templateVars)
 })
@@ -97,7 +97,7 @@ app.post("/urls", (req, res) => {
 
 app.get("/urls/new", (req, res) => {
   const templateVars = {
-    user: getUser(req)
+    user: getUserByCookie(req)
   }
   res.render("urls_new", templateVars)
 })
@@ -106,7 +106,7 @@ app.get("/urls/:id", (req, res) => {
   const templateVars = {
     id: req.params.id,
     longURL: urlDatabase[req.params.id],
-    user: getUser(req)
+    user: getUserByCookie(req)
   }
   res.render("urls_show", templateVars)
 })
