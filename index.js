@@ -30,6 +30,15 @@ const generateUid = function() {
   return Math.floor((1 + Math.random()) * 0x10000).toString(16)
 }
 
+const getUser = function(req) {
+  const userId = req.cookies["user_id"]
+  if (!userId) {
+    return undefined
+  }
+
+  return users[userId]
+}
+
 app.get("/", (req, res) => {
   res.send("Hello!")
 })
@@ -40,7 +49,7 @@ app.get("/hello", (req, res) => {
 
 app.get("/register", (req, res) => {
   const templateVars = {
-    username: req.cookies["username"] ? req.cookies["username"].username : null
+    user: getUser(req)
   }
   res.render("register", templateVars)
 })
@@ -67,7 +76,7 @@ app.get("/users", (req, res) => {
 app.get("/urls", (req, res) => {
   const templateVars = {
     urls: urlDatabase,
-    username: req.cookies["username"] ? req.cookies["username"].username : null
+    user: getUser(req)
   }
   res.render("urls_index", templateVars)
 })
@@ -88,7 +97,7 @@ app.post("/urls", (req, res) => {
 
 app.get("/urls/new", (req, res) => {
   const templateVars = {
-    username: req.cookies["username"] ? req.cookies["username"].username : null
+    user: getUser(req)
   }
   res.render("urls_new", templateVars)
 })
@@ -97,7 +106,7 @@ app.get("/urls/:id", (req, res) => {
   const templateVars = {
     id: req.params.id,
     longURL: urlDatabase[req.params.id],
-    username: req.cookies["username"] ? req.cookies["username"].username : null
+    user: getUser(req)
   }
   res.render("urls_show", templateVars)
 })
@@ -133,7 +142,7 @@ app.post("/login", (req, res) => {
 })
 
 app.post("/logout", (req, res) => {
-  res.clearCookie('username')
+  res.clearCookie('user_id')
   res.redirect('/urls')
 })
 
