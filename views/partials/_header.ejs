@@ -21,14 +21,8 @@
           <form class="form-inline" action="/logout" method="POST">
             <button type="submit" class="btn btn-primary">Logout</button>
           </form>
-        <% } else { %> 
-          <form class="form-inline" action="/login" method="POST">
-            <div class="form-group mx-sm-3">
-              <label for="username" class="sr-only">Username</label>
-              <input type="username" name="username" class="form-control" id="username" placeholder="Username">
-            </div>
-            <button type="submit" class="btn btn-primary">Login</button>
-          </form>
+        <% } else { %>
+          <a class="nav-item nav-link" href="/register">Register</a>
         <% } %> 
       </div>
     </div>
