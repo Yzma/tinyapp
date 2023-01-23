@@ -12,7 +12,7 @@
       </div>
 
       <% if(user) { %>
-        <a class="nav-item nav-link">User: <%= user.email %> </a>
+        <a class="nav-link text-dark">User: <%= user.email %> </a>
         <form class="form-inline" action="/logout" method="POST">
           <button type="submit" class="btn btn-primary">Logout</button>
         </form>
