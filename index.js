@@ -202,6 +202,10 @@ app.post("/urls/:id/delete", (req, res) => {
 // TODO: Validate if a URL was actually found
 app.get("/u/:id", (req, res) => {
   const foundURL = urlDatabase[req.params.id]
+  if (!foundURL) {
+    res.send("<html><p>That short URL id does not exist</p></html>")
+    return
+  }
   res.redirect(foundURL)
 })
 
