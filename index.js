@@ -169,8 +169,26 @@ app.get("/u/:id", (req, res) => {
 })
 
 app.post("/login", (req, res) => {
-  const username = req.body
-  res.cookie('username', username)
+  const { email, password } = req.body
+
+  if (!isValid(email, password)) {
+    res.status(400).send("Error: Invalid email or password params")
+    return
+  }
+
+  const user = getUserByEmail(email)
+  if (!user) {
+    res.status(400).send("Error: Account with provided email does not exist")
+    return
+  }
+
+  if (user.password !== password) {
+    res.status(400).send("Error: Invalid password")
+    return
+  }
+
+  console.log('logging in user:', user)
+  res.cookie('user_id', user.id)
   res.redirect('/urls')
 })
 
