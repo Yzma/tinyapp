@@ -224,7 +224,7 @@ app.get("/u/:id", (req, res) => {
     res.send("<html><p>That short URL id does not exist</p></html>")
     return
   }
-  res.redirect(foundURL)
+  res.redirect(foundURL.longURL)
 })
 
 app.post("/login", (req, res) => {
