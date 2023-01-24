@@ -18,7 +18,14 @@
       <div class="card-body">
         <h5 class="card-title">TinyURL for: <%= url.longURL %></h5>
         <p class="card-text">
-          Short URL ID: <a href="/u/<%= id %>"><%= id %></a>
+          Short URL ID: <a href="/u/<%= id %>"><%= id %></a><br>
+          Total Visitors: <%= url.totalTimesVisited %><br>
+          <% if (url.uniqueVisitors.length > 0) { %>
+            <% for (let i of url.uniqueVisitors) { %>
+              <a><%= i.timestamp %> - <%= i.trackerID %></a><br>
+            <% } %> 
+          <% } %>
+
         </p>
       </div>
       <div class="card-footer text-muted"></div>
