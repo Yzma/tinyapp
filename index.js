@@ -239,8 +239,33 @@ app.post("/urls/:id", (req, res) => {
 })
 
 app.post("/urls/:id/delete", (req, res) => {
+  const id = req.params.id
+
+  if (!id) {
+    res.send('Error: invalid ID')
+    return
+  }
+
+  const userByCookie = getUserByCookie(req)
+  if (!userByCookie) {
+    res.redirect('/login')
+    return
+  }
+
+  const url = urlDatabase[id]
+  if (!url) {
+    res.send('Error: URL not found')
+    return
+  }
+
+  if (userByCookie.id !== url.userID) {
+    res.redirect('/login')
+    return
+  }
+
+
   delete urlDatabase[req.params.id]
-  res.redirect('/urls/')
+  res.redirect('/urls')
 })
 
 app.get("/u/:id", (req, res) => {
