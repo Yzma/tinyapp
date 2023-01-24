@@ -47,6 +47,13 @@ const getUserByEmail = function(email) {
   return undefined
 }
 
+const isValid = function(email, password) {
+  if ((!email || email.length === 0) || (!password || password.length === 0)) {
+    return false
+  }
+  return true
+}
+
 app.get("/", (req, res) => {
   res.send("Hello!")
 })
@@ -72,14 +79,14 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) => {
   const { email, password } = req.body
 
-  if ((!email || email.length === 0) || (!password || password.length === 0)) {
-    res.status(400).send("Error: Invalid username or password")
+  if (!isValid(email, password)) {
+    res.status(400).send("Error: Invalid username or password params")
     return
   }
 
-  const existingUser = getUserByEmail(email)
-  if (existingUser) {
-    res.status(400).send("Error: Email already in use")
+  const user = getUserByEmail(email)
+  if (user) {
+    res.status(400).send("Error: Account with that email already exists")
     return
   }
   
