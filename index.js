@@ -39,6 +39,19 @@ const getUserByCookie = function(req) {
   return users[userId]
 }
 
+const getUserByID = function(id) {
+  return users[id]
+}
+
+const isLoggedIn = function(req) {
+  const userByCookie = getUserByCookie(req)
+  if (!userByCookie) {
+    return false
+  }
+
+  return true
+}
+
 const getUserByEmail = function(email) {
   for (let i in users) {
     if (users[i].email === email)
@@ -63,17 +76,29 @@ app.get("/hello", (req, res) => {
 })
 
 app.get("/login", (req, res) => {
-  const templateVars = {
-    user: getUserByCookie(req)
+  const userByCookie = getUserByCookie(req)
+  if (!userByCookie) {
+    const templateVars = {
+      user: null
+    }
+    res.render("login", templateVars)
+    return
   }
-  res.render("login", templateVars)
+ 
+  res.redirect('/urls')
 })
 
 app.get("/register", (req, res) => {
-  const templateVars = {
-    user: getUserByCookie(req)
+  const userByCookie = getUserByCookie(req)
+  if (!userByCookie) {
+    const templateVars = {
+      user: null
+    }
+    res.render("register", templateVars)
+    return
   }
-  res.render("register", templateVars)
+ 
+  res.redirect('/urls')
 })
 
 app.post("/register", (req, res) => {
