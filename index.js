@@ -302,11 +302,17 @@ app.get("/u/:id", (req, res) => {
   if (!trackingCookie) {
     const newUid = generateUid()
     res.cookie('trackerID', newUid, { maxAge: 900000, httpOnly: true })
-    foundURL.uniqueVisitors.push(newUid)
+    foundURL.uniqueVisitors.push({
+      trackerID: newUid,
+      timestamp: new Date()
+    })
   } else {
     const hasVisitedBefore = foundURL.uniqueVisitors.includes(trackingCookie)
     if (!hasVisitedBefore) {
-      foundURL.uniqueVisitors.push(trackingCookie)
+      foundURL.uniqueVisitors.push({
+        trackerID: trackingCookie,
+        timestamp: new Date()
+      })
     }
   }
 
