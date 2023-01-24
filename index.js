@@ -173,7 +173,10 @@ app.post("/urls", (req, res) => {
   }
 
   const id = generateUid()
-  urlDatabase[id] = longURL
+  urlDatabase[id] = {
+    longURL: longURL,
+    userID: userByCookie.id
+  }
 
   res.redirect(`/urls/${id}`)
 })
