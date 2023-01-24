@@ -1,3 +1,4 @@
+const { getUserByCookie, getUserByEmail, getURLSForUser, isValid, generateUid } = require('./helper')
 const express = require("express")
 const cookieSession = require('cookie-session')
 const bcrypt = require("bcryptjs")
@@ -39,49 +40,6 @@ const urlDatabase = {
   },
 }
 
-const generateUid = function() {
-  return Math.floor((1 + Math.random()) * 0x10000).toString(16)
-}
-
-const getUserByCookie = function(req) {
-  // const userId = req.cookies["user_id"]
-  const userId = req.session.userID
-  if (!userId) {
-    return undefined
-  }
-
-  return users[userId]
-}
-
-const getURLSForUser = function(user) {
-  if (!user) {
-    return []
-  }
-
-  let result = []
-  for (let i in urlDatabase) {
-    if (urlDatabase[i].userID === user.id) {
-      result.push(urlDatabase[i])
-    }
-  }
-  return result
-}
-
-const getUserByEmail = function(email) {
-  for (let i in users) {
-    if (users[i].email === email)
-      return users[i]
-  }
-  return undefined
-}
-
-const isValid = function(email, password) {
-  if ((!email || email.length === 0) || (!password || password.length === 0)) {
-    return false
-  }
-  return true
-}
-
 app.get("/", (req, res) => {
   res.send("Hello!")
 })
@@ -107,7 +65,7 @@ app.get("/urldatabase", (req, res) => {
  */
 
 app.get("/login", (req, res) => {
-  const userByCookie = getUserByCookie(req)
+  const userByCookie = getUserByCookie(req, users)
   if (!userByCookie) {
     const templateVars = {
       user: null
@@ -127,7 +85,7 @@ app.post("/login", (req, res) => {
     return
   }
 
-  const user = getUserByEmail(email)
+  const user = getUserByEmail(email, users)
   if (!user) {
     res.status(400).send("Error: Account with provided email does not exist")
     return
@@ -153,7 +111,7 @@ app.post("/logout", (req, res) => {
  */
 
 app.get("/register", (req, res) => {
-  const userByCookie = getUserByCookie(req)
+  const userByCookie = getUserByCookie(req, users)
   if (!userByCookie) {
     const templateVars = {
       user: null
@@ -173,7 +131,7 @@ app.post("/register", (req, res) => {
     return
   }
 
-  const user = getUserByEmail(email)
+  const user = getUserByEmail(email, users)
   if (user) {
     res.status(400).send("Error: Account with that email already exists")
     return
@@ -197,22 +155,22 @@ app.post("/register", (req, res) => {
  */
 
 app.get("/urls", (req, res) => {
-  const userByCookie = getUserByCookie(req)
+  const userByCookie = getUserByCookie(req, users)
   if (!userByCookie) {
     res.redirect('/login')
     return
   }
 
-  const urls = getURLSForUser(userByCookie)
+  const urls = getURLSForUser(userByCookie, urlDatabase)
   const templateVars = {
     urls: urls,
-    user: getUserByCookie(req)
+    user: userByCookie
   }
   res.render("urls_index", templateVars)
 })
 
 app.post("/urls", (req, res) => {
-  const userByCookie = getUserByCookie(req)
+  const userByCookie = getUserByCookie(req, users)
   if (!userByCookie) {
     res.send("<html><p>You do not have permission to create new URLs</p></html>")
     return
@@ -235,7 +193,7 @@ app.post("/urls", (req, res) => {
 })
 
 app.get("/urls/new", (req, res) => {
-  const userByCookie = getUserByCookie(req)
+  const userByCookie = getUserByCookie(req, users)
   if (!userByCookie) {
     res.redirect('/login')
     return
@@ -256,7 +214,7 @@ app.get("/urls/:id", (req, res) => {
   const templateVars = {
     id: req.params.id,
     url: foundURL,
-    user: getUserByCookie(req)
+    user: getUserByCookie(req, users)
   }
   res.render("urls_show", templateVars)
 })
@@ -275,7 +233,7 @@ app.post("/urls/:id", (req, res) => {
     return
   }
 
-  const userByCookie = getUserByCookie(req)
+  const userByCookie = getUserByCookie(req, users)
   if (!userByCookie) {
     res.redirect('/login')
     return
@@ -304,7 +262,7 @@ app.post("/urls/:id/delete", (req, res) => {
     return
   }
 
-  const userByCookie = getUserByCookie(req)
+  const userByCookie = getUserByCookie(req, users)
   if (!userByCookie) {
     res.redirect('/login')
     return
