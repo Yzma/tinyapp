@@ -34,11 +34,15 @@ const urlDatabase = {
     id: 'b6UTxQ',
     longURL: "http://www.lighthouselabs.ca",
     userID: "aJ48lW",
+    totalTimesVisited: 0,
+    uniqueVisitors: []
   },
   i3BoGr: {
     id: 'i3BoGr',
     longURL: "https://www.google.ca",
     userID: "aJ48lW",
+    totalTimesVisited: 0,
+    uniqueVisitors: []
   },
 }
 
@@ -98,7 +102,6 @@ app.post("/login", (req, res) => {
     return
   }
 
-  // res.cookie('user_id', user.id)
   req.session.userID = user.id
   res.redirect('/urls')
 })
@@ -147,7 +150,6 @@ app.post("/register", (req, res) => {
     password: hashedPassword
   }
 
-  // res.cookie('user_id', id)
   req.session.userID = id
   res.redirect('/urls')
 })
@@ -188,7 +190,9 @@ app.post("/urls", (req, res) => {
   urlDatabase[id] = {
     id: id,
     longURL: longURL,
-    userID: userByCookie.id
+    userID: userByCookie.id,
+    totalTimesVisited: 0,
+    uniqueVisitors: []
   }
 
   res.redirect(`/urls/${id}`)
@@ -291,6 +295,7 @@ app.get("/u/:id", (req, res) => {
     res.send("<html><p>That short URL id does not exist</p></html>")
     return
   }
+  foundURL.totalTimesVisited++
   res.redirect(foundURL.longURL)
 })
 
