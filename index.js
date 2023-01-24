@@ -140,6 +140,12 @@ app.get("/urls", (req, res) => {
 })
 
 app.post("/urls", (req, res) => {
+  const userByCookie = getUserByCookie(req)
+  if (!userByCookie) {
+    res.send("<html><p>You do not have permission to create new URLs</p></html>")
+    return
+  }
+ 
   const longURL = req.body.longURL
   if (!longURL) {
     res.send('Error: invalid URL')
