@@ -151,9 +151,20 @@ app.get("/users", (req, res) => {
   res.send(users)
 })
 
+app.get("/urldatabase", (req, res) => {
+  res.send(urlDatabase)
+})
+
 app.get("/urls", (req, res) => {
+  const userByCookie = getUserByCookie(req)
+  if (!userByCookie) {
+    res.redirect('/login')
+    return
+  }
+
+  const urls = getURLSForUser(userByCookie)
   const templateVars = {
-    urls: urlDatabase,
+    urls: urls,
     user: getUserByCookie(req)
   }
   res.render("urls_index", templateVars)
