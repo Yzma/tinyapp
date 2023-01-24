@@ -2,7 +2,7 @@ const express = require("express")
 const cookieParser = require('cookie-parser')
 
 const app = express()
-const PORT = 8080 // default port 8080
+const PORT = 8080
 
 app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }))
@@ -59,19 +59,6 @@ const getURLSForUser = function(user) {
   return result
 }
 
-const getUserByID = function(id) {
-  return users[id]
-}
-
-const isLoggedIn = function(req) {
-  const userByCookie = getUserByCookie(req)
-  if (!userByCookie) {
-    return false
-  }
-
-  return true
-}
-
 const getUserByEmail = function(email) {
   for (let i in users) {
     if (users[i].email === email)
@@ -95,6 +82,22 @@ app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n")
 })
 
+/**
+ * Debug Route
+ */
+
+app.get("/users", (req, res) => {
+  res.send(users)
+})
+
+app.get("/urldatabase", (req, res) => {
+  res.send(urlDatabase)
+})
+
+/**
+ * Login Route
+ */
+
 app.get("/login", (req, res) => {
   const userByCookie = getUserByCookie(req)
   if (!userByCookie) {
@@ -104,9 +107,41 @@ app.get("/login", (req, res) => {
     res.render("login", templateVars)
     return
   }
- 
+
   res.redirect('/urls')
 })
+
+app.post("/login", (req, res) => {
+  const { email, password } = req.body
+
+  if (!isValid(email, password)) {
+    res.status(400).send("Error: Invalid email or password params")
+    return
+  }
+
+  const user = getUserByEmail(email)
+  if (!user) {
+    res.status(400).send("Error: Account with provided email does not exist")
+    return
+  }
+
+  if (user.password !== password) {
+    res.status(400).send("Error: Invalid password")
+    return
+  }
+
+  res.cookie('user_id', user.id)
+  res.redirect('/urls')
+})
+
+app.post("/logout", (req, res) => {
+  res.clearCookie('user_id')
+  res.redirect('/login')
+})
+
+/**
+ * Register Route
+ */
 
 app.get("/register", (req, res) => {
   const userByCookie = getUserByCookie(req)
@@ -117,7 +152,7 @@ app.get("/register", (req, res) => {
     res.render("register", templateVars)
     return
   }
- 
+
   res.redirect('/urls')
 })
 
@@ -134,7 +169,7 @@ app.post("/register", (req, res) => {
     res.status(400).send("Error: Account with that email already exists")
     return
   }
-  
+
   const id = generateUid()
   users[id] = {
     id: id,
@@ -143,17 +178,12 @@ app.post("/register", (req, res) => {
   }
 
   res.cookie('user_id', id)
-
   res.redirect('/urls')
 })
 
-app.get("/users", (req, res) => {
-  res.send(users)
-})
-
-app.get("/urldatabase", (req, res) => {
-  res.send(urlDatabase)
-})
+/**
+ * URL Routes
+ */
 
 app.get("/urls", (req, res) => {
   const userByCookie = getUserByCookie(req)
@@ -176,7 +206,7 @@ app.post("/urls", (req, res) => {
     res.send("<html><p>You do not have permission to create new URLs</p></html>")
     return
   }
- 
+
   const longURL = req.body.longURL
   if (!longURL) {
     res.send('Error: invalid URL')
@@ -198,7 +228,7 @@ app.get("/urls/new", (req, res) => {
     res.redirect('/login')
     return
   }
- 
+
   const templateVars = {
     user: userByCookie
   }
@@ -227,7 +257,7 @@ app.post("/urls/:id", (req, res) => {
     res.send('Error: invalid URL')
     return
   }
-  
+
   const userByCookie = getUserByCookie(req)
   if (!userByCookie) {
     res.redirect('/login')
@@ -274,7 +304,6 @@ app.post("/urls/:id/delete", (req, res) => {
     return
   }
 
-
   delete urlDatabase[req.params.id]
   res.redirect('/urls')
 })
@@ -286,34 +315,6 @@ app.get("/u/:id", (req, res) => {
     return
   }
   res.redirect(foundURL.longURL)
-})
-
-app.post("/login", (req, res) => {
-  const { email, password } = req.body
-
-  if (!isValid(email, password)) {
-    res.status(400).send("Error: Invalid email or password params")
-    return
-  }
-
-  const user = getUserByEmail(email)
-  if (!user) {
-    res.status(400).send("Error: Account with provided email does not exist")
-    return
-  }
-
-  if (user.password !== password) {
-    res.status(400).send("Error: Invalid password")
-    return
-  }
-
-  res.cookie('user_id', user.id)
-  res.redirect('/urls')
-})
-
-app.post("/logout", (req, res) => {
-  res.clearCookie('user_id')
-  res.redirect('/login')
 })
 
 app.listen(PORT, () => {
