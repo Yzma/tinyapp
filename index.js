@@ -245,9 +245,14 @@ app.get("/urls/new", (req, res) => {
 })
 
 app.get("/urls/:id", (req, res) => {
+  const foundURL = urlDatabase[req.params.id]
+  if (!foundURL) {
+    res.send("<html><p>That short URL id does not exist</p></html>")
+    return
+  }
   const templateVars = {
     id: req.params.id,
-    longURL: urlDatabase[req.params.id],
+    url: foundURL,
     user: getUserByCookie(req)
   }
   res.render("urls_show", templateVars)
