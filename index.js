@@ -204,15 +204,37 @@ app.get("/urls/:id", (req, res) => {
 })
 
 app.post("/urls/:id", (req, res) => {
+  const id = req.params.id
   const longURL = req.body.longURL
+
+  if (!id) {
+    res.send('Error: invalid ID')
+    return
+  }
+
   if (!longURL) {
     res.send('Error: invalid URL')
     return
   }
+  
+  const userByCookie = getUserByCookie(req)
+  if (!userByCookie) {
+    res.redirect('/login')
+    return
+  }
 
-  const id = req.params.id
+  const url = urlDatabase[id]
+  if (!url) {
+    res.send('Error: URL not found')
+    return
+  }
 
-  urlDatabase[id] = longURL
+  if (userByCookie.id !== url.userID) {
+    res.redirect('/login')
+    return
+  }
+
+  url.longURL = longURL
   res.redirect(`/urls/`)
 })
 
