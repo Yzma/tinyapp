@@ -22,8 +22,14 @@ const users = {
 }
 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  b6UTxQ: {
+    longURL: "http://www.lighthouselabs.ca",
+    userID: "aJ48lW",
+  },
+  i3BoGr: {
+    longURL: "https://www.google.ca",
+    userID: "aJ48lW",
+  },
 }
 
 const generateUid = function() {
@@ -37,6 +43,20 @@ const getUserByCookie = function(req) {
   }
 
   return users[userId]
+}
+
+const getURLSForUser = function(user) {
+  if (!user) {
+    return []
+  }
+
+  let result = []
+  for (let i in urlDatabase) {
+    if (urlDatabase[i].userID === user.id) {
+      result.push(urlDatabase[i])
+    }
+  }
+  return result
 }
 
 const getUserByID = function(id) {
@@ -155,7 +175,6 @@ app.post("/urls", (req, res) => {
   const id = generateUid()
   urlDatabase[id] = longURL
 
-  console.log(req.body)
   res.redirect(`/urls/${id}`)
 })
 
@@ -199,7 +218,6 @@ app.post("/urls/:id/delete", (req, res) => {
   res.redirect('/urls/')
 })
 
-// TODO: Validate if a URL was actually found
 app.get("/u/:id", (req, res) => {
   const foundURL = urlDatabase[req.params.id]
   if (!foundURL) {
