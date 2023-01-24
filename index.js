@@ -154,8 +154,14 @@ app.post("/urls", (req, res) => {
 })
 
 app.get("/urls/new", (req, res) => {
+  const userByCookie = getUserByCookie(req)
+  if (!userByCookie) {
+    res.redirect('/login')
+    return
+  }
+ 
   const templateVars = {
-    user: getUserByCookie(req)
+    user: userByCookie
   }
   res.render("urls_new", templateVars)
 })
