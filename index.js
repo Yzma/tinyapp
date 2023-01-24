@@ -219,7 +219,7 @@ app.get("/urls/:id", (req, res) => {
   res.render("urls_show", templateVars)
 })
 
-app.post("/urls/:id", (req, res) => {
+app.put("/urls/:id", (req, res) => {
   const id = req.params.id
   const longURL = req.body.longURL
 
@@ -254,7 +254,7 @@ app.post("/urls/:id", (req, res) => {
   res.redirect(`/urls/`)
 })
 
-app.post("/urls/:id/delete", (req, res) => {
+app.delete("/urls/:id/delete", (req, res) => {
   const id = req.params.id
 
   if (!id) {
