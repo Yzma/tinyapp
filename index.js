@@ -28,10 +28,12 @@ const users = {
 
 const urlDatabase = {
   b6UTxQ: {
+    id: 'b6UTxQ',
     longURL: "http://www.lighthouselabs.ca",
     userID: "aJ48lW",
   },
   i3BoGr: {
+    id: 'i3BoGr',
     longURL: "https://www.google.ca",
     userID: "aJ48lW",
   },
@@ -224,6 +226,7 @@ app.post("/urls", (req, res) => {
 
   const id = generateUid()
   urlDatabase[id] = {
+    id: id,
     longURL: longURL,
     userID: userByCookie.id
   }
