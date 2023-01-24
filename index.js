@@ -2,6 +2,7 @@ const { getUserByCookie, getUserByEmail, getURLSForUser, isValid, generateUid } 
 const express = require("express")
 const cookieSession = require('cookie-session')
 const bcrypt = require("bcryptjs")
+const methodOverride = require('method-override')
 
 const app = express()
 const PORT = 8080
@@ -13,6 +14,7 @@ app.use(cookieSession({
 }))
 app.use(express.urlencoded({ extended: true }))
 app.set("view engine", "ejs")
+app.use(methodOverride('_method'))
 
 const users = {
   userRandomID: {
