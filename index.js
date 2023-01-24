@@ -1,11 +1,15 @@
 const express = require("express")
-const cookieParser = require('cookie-parser')
+const cookieSession = require('cookie-session')
 const bcrypt = require("bcryptjs")
 
 const app = express()
 const PORT = 8080
 
-app.use(cookieParser())
+app.use(cookieSession({
+  name: 'session',
+  keys: ["SomeSecretKeyThatShouldNotBeInGitHub"],
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}))
 app.use(express.urlencoded({ extended: true }))
 app.set("view engine", "ejs")
 
@@ -38,7 +42,8 @@ const generateUid = function() {
 }
 
 const getUserByCookie = function(req) {
-  const userId = req.cookies["user_id"]
+  // const userId = req.cookies["user_id"]
+  const userId = req.session.userID
   if (!userId) {
     return undefined
   }
@@ -131,12 +136,13 @@ app.post("/login", (req, res) => {
     return
   }
 
-  res.cookie('user_id', user.id)
+  // res.cookie('user_id', user.id)
+  req.session.userID = user.id
   res.redirect('/urls')
 })
 
 app.post("/logout", (req, res) => {
-  res.clearCookie('user_id')
+  res.clearCookie('userID')
   res.redirect('/login')
 })
 
@@ -179,7 +185,8 @@ app.post("/register", (req, res) => {
     password: hashedPassword
   }
 
-  res.cookie('user_id', id)
+  // res.cookie('user_id', id)
+  req.session.userID = id
   res.redirect('/urls')
 })
 
