@@ -80,7 +80,7 @@ app.post("/register", (req, res) => {
   const { email, password } = req.body
 
   if (!isValid(email, password)) {
-    res.status(400).send("Error: Invalid username or password params")
+    res.status(400).send("Error: Invalid email or password params")
     return
   }
 
