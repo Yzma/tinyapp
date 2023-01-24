@@ -1,5 +1,6 @@
 const express = require("express")
 const cookieParser = require('cookie-parser')
+const bcrypt = require("bcryptjs")
 
 const app = express()
 const PORT = 8080
@@ -125,7 +126,7 @@ app.post("/login", (req, res) => {
     return
   }
 
-  if (user.password !== password) {
+  if (!bcrypt.compareSync(password, user.password)) {
     res.status(400).send("Error: Invalid password")
     return
   }
@@ -171,10 +172,11 @@ app.post("/register", (req, res) => {
   }
 
   const id = generateUid()
+  const hashedPassword = bcrypt.hashSync(password, 10)
   users[id] = {
     id: id,
     email: email,
-    password: password
+    password: hashedPassword
   }
 
   res.cookie('user_id', id)
