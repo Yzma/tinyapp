@@ -187,14 +187,13 @@ app.post("/login", (req, res) => {
     return
   }
 
-  console.log('logging in user:', user)
   res.cookie('user_id', user.id)
   res.redirect('/urls')
 })
 
 app.post("/logout", (req, res) => {
   res.clearCookie('user_id')
-  res.redirect('/urls')
+  res.redirect('/login')
 })
 
 app.listen(PORT, () => {
