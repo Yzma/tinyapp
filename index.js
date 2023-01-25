@@ -208,12 +208,6 @@ app.put("/urls/:id", (req, res) => {
   const id = req.params.id
   const longURL = req.body.longURL
 
-  // TODO: Check if this could happen
-  // if (!id) {
-  //   res.send('Error: invalid ID')
-  //   return
-  // }
-
   if (!isValid(longURL)) {
     return res.send('Error: invalid URL')
   }
@@ -238,11 +232,6 @@ app.put("/urls/:id", (req, res) => {
 
 app.delete("/urls/:id/delete", (req, res) => {
   const id = req.params.id
-
-  // TODO: Check if this could happen
-  if (!isValid(id)) {
-    return res.send('Error: invalid ID')
-  }
 
   const userByCookie = getUserByCookie(req, users)
   if (!userByCookie) {
