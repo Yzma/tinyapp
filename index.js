@@ -37,11 +37,7 @@ const urlDatabase = {
 }
 
 app.get("/", (req, res) => {
-  return res.send("Hello!")
-})
-
-app.get("/hello", (req, res) => {
-  return res.send("<html><body>Hello <b>World</b></body></html>\n")
+  return res.redirect('/urls')
 })
 
 /**
