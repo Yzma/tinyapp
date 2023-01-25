@@ -1,7 +1,7 @@
 const { getUserByCookie, getUserByEmail, getURLSForUser, isValid, generateUid } = require('./helper')
 const express = require("express")
 const cookieSession = require('cookie-session')
-const cookieParser = require('cookie-parser')
+// const cookieParser = require('cookie-parser')
 const bcrypt = require("bcryptjs")
 const methodOverride = require('method-override')
 
@@ -13,7 +13,7 @@ app.use(cookieSession({
   keys: ["SomeSecretKeyThatShouldNotBeInGitHub"],
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }))
-app.use(cookieParser())
+// app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 
@@ -299,23 +299,31 @@ app.get("/u/:id", (req, res) => {
     return
   }
 
-  const trackingCookie = req.cookies['trackerID']
-  if (!trackingCookie) {
-    const newUid = generateUid()
-    res.cookie('trackerID', newUid, { maxAge: 900000, httpOnly: true })
-    foundURL.uniqueVisitors.push({
-      trackerID: newUid,
-      timestamp: new Date()
-    })
-  } else {
-    const hasVisitedBefore = foundURL.uniqueVisitors.includes(trackingCookie)
-    if (!hasVisitedBefore) {
-      foundURL.uniqueVisitors.push({
-        trackerID: trackingCookie,
-        timestamp: new Date()
-      })
-    }
+  // Generate trackerID when visiting a URL
+  if (!req.session.trackerID) {
+    req.session.trackerID = generateUid()
   }
+  
+  const trackerID = req.session.trackerID
+
+  console.log('res.session.trackerID: ', trackerID)
+  // const trackingCookie = req.cookies['trackerID']
+  // if (!trackingCookie) {
+  //   const newUid = generateUid()
+  //   res.cookie('trackerID', newUid, { maxAge: 900000, httpOnly: true })
+  //   foundURL.uniqueVisitors.push({
+  //     trackerID: newUid,
+  //     timestamp: new Date()
+  //   })
+  // } else {
+  //   const hasVisitedBefore = foundURL.uniqueVisitors.includes(trackingCookie)
+  //   if (!hasVisitedBefore) {
+  //     foundURL.uniqueVisitors.push({
+  //       trackerID: trackingCookie,
+  //       timestamp: new Date()
+  //     })
+  //   }
+  // }
 
   foundURL.totalTimesVisited++
   res.redirect(foundURL.longURL)
