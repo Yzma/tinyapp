@@ -22,7 +22,7 @@
           Total Visitors: <%= url.totalTimesVisited %><br>
           <% if (url.uniqueVisitors.length > 0) { %>
             <% for (let i of url.uniqueVisitors) { %>
-              <a><%= i.timestamp %> - <%= i.trackerID %></a><br>
+              <a><%= i.timestamp.toLocaleString() %> - <%= i.trackerID %></a><br>
             <% } %> 
           <% } %>
 
