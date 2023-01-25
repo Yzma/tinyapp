@@ -30,9 +30,15 @@ const getURLSForUser = function(user, urlDatabase) {
   return result
 }
 
-const isValid = function(email, password) {
-  if ((!email || email.length === 0) || (!password || password.length === 0)) {
-    return false
+const userOwnsURL = function(user, url) {
+  return user.id === url.userID
+}
+
+const isValid = function(...params) {
+  for (let i of params) {
+    if ((!i || i.length === 0)) {
+      return false
+    }
   }
   return true
 }
@@ -46,5 +52,6 @@ module.exports = {
   getUserByEmail,
   getURLSForUser,
   isValid,
+  userOwnsURL,
   generateUid
 }
