@@ -26,7 +26,7 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 !["My URLs"](./screenshots/myurls.png)
 
-## My URLs:
+## Create new URL:
 !["Create new URL"](./screenshots/create_url.png)
 
 ## View URL:
