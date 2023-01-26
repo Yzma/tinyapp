@@ -47,6 +47,12 @@ const generateUid = function() {
   return Math.floor((1 + Math.random()) * 0x10000).toString(16)
 }
 
+// TODO
+const authenticateUser = function(email, password) {
+  // return { user: user, error: error}
+  // const { user, error } = authenticateUser(email, password)
+}
+
 module.exports = {
   getUserByCookie,
   getUserByEmail,
