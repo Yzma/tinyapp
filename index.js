@@ -194,10 +194,21 @@ app.get("/urls/:id", (req, res) => {
     return res.send("<html><p>That short URL id does not exist</p></html>")
   }
 
+  const user = getUserByCookie(req, users)
+  if (!user) {
+    console.log('1 here')
+    return res.send("<html><p>You do not have permission to view this URL</p></html>")
+  }
+
+  if (!userOwnsURL(user, foundURL)) {
+    console.log('2 here')
+    return res.send("<html><p>You do not have permission to view this URL</p></html>")
+  }
+
   const templateVars = {
     id: req.params.id,
     url: foundURL,
-    user: getUserByCookie(req, users)
+    user: user
   }
   return res.render("urls_show", templateVars)
 })
