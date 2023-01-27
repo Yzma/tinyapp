@@ -1,3 +1,7 @@
+
+/**
+ * For debug purposes only. This route would not be in production, but is used to check that both the Users and URL databases are being updated correctly.
+ */
 const users = require('../database/userDB')
 const urlDatabase = require('../database/urlDB')
 
