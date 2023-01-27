@@ -1,8 +1,6 @@
 require("dotenv").config()
 
-const users = require('./database/userDB')
-const urlDatabase = require('./database/urlDB')
-const { getUserByCookie, getUserByEmail, getURLSForUser, userOwnsURL, } = require('./util/userHelper')
+const { createUser, createURL, getUserByCookie, getUserByEmail, getURLSForUser, getURLFromID, deleteURL, userOwnsURL, } = require('./util/databaseHelper')
 const { isValid, generateUid } = require('./util/util')
 
 const express = require("express")
@@ -32,20 +30,20 @@ app.get("/", (req, res) => {
  * Debug Route
  */
 
-app.get("/users", (req, res) => {
-  return res.send(users)
-})
+// app.get("/users", (req, res) => {
+//   return res.send(users)
+// })
 
-app.get("/urldatabase", (req, res) => {
-  return res.send(urlDatabase)
-})
+// app.get("/urldatabase", (req, res) => {
+//   return res.send(urlDatabase)
+// })
 
 /**
  * Login Route
  */
 
 app.get("/login", (req, res) => {
-  const userByCookie = getUserByCookie(req, users)
+  const userByCookie = getUserByCookie(req)
   if (!userByCookie) {
     const templateVars = {
       user: null
@@ -63,7 +61,7 @@ app.post("/login", (req, res) => {
     return res.status(400).send("<html><p>Error: Invalid email or password</p></html")
   }
 
-  const user = getUserByEmail(email, users)
+  const user = getUserByEmail(email)
   if (!user) {
     return res.status(400).send("<html><p>Error: Account with provided email does not exist</p></html")
   }
@@ -86,7 +84,7 @@ app.post("/logout", (req, res) => {
  */
 
 app.get("/register", (req, res) => {
-  const userByCookie = getUserByCookie(req, users)
+  const userByCookie = getUserByCookie(req)
   if (!userByCookie) {
     const templateVars = {
       user: null
@@ -104,20 +102,14 @@ app.post("/register", (req, res) => {
     return res.status(400).send("<html><p>Error: Invalid email or password</p></html")
   }
 
-  const user = getUserByEmail(email, users)
+  const user = getUserByEmail(email)
   if (user) {
     return res.status(400).send("<html><p>Error: Account with that email already exists</p></html")
   }
 
-  const id = generateUid()
-  const hashedPassword = bcrypt.hashSync(password, 10)
-  users[id] = {
-    id: id,
-    email: email,
-    password: hashedPassword
-  }
+  const newUser = createUser(email, password)
 
-  req.session.userID = id
+  req.session.userID = newUser.id
   return res.redirect('/urls')
 })
 
@@ -126,12 +118,12 @@ app.post("/register", (req, res) => {
  */
 
 app.get("/urls", (req, res) => {
-  const userByCookie = getUserByCookie(req, users)
+  const userByCookie = getUserByCookie(req)
   if (!userByCookie) {
     return res.redirect('/login')
   }
 
-  const urls = getURLSForUser(userByCookie, urlDatabase)
+  const urls = getURLSForUser(userByCookie)
   const templateVars = {
     user: userByCookie,
     urls: urls
@@ -140,7 +132,7 @@ app.get("/urls", (req, res) => {
 })
 
 app.post("/urls", (req, res) => {
-  const userByCookie = getUserByCookie(req, users)
+  const userByCookie = getUserByCookie(req)
   if (!userByCookie) {
     return res.send("<html><p>You do not have permission to create new URLs</p></html>")
   }
@@ -150,20 +142,13 @@ app.post("/urls", (req, res) => {
     return res.send('<html><p>Error: invalid URL</p></html')
   }
 
-  const id = generateUid()
-  urlDatabase[id] = {
-    id: id,
-    longURL: longURL,
-    userID: userByCookie.id,
-    totalTimesVisited: 0,
-    uniqueVisitors: []
-  }
+  const newURL = createURL(userByCookie, longURL)
 
-  res.redirect(`/urls/${id}`)
+  res.redirect(`/urls/${newURL.id}`)
 })
 
 app.get("/urls/new", (req, res) => {
-  const userByCookie = getUserByCookie(req, users)
+  const userByCookie = getUserByCookie(req)
   if (!userByCookie) {
     return res.redirect('/login')
   }
@@ -175,17 +160,13 @@ app.get("/urls/new", (req, res) => {
 })
 
 app.get("/urls/:id", (req, res) => {
-  const foundURL = urlDatabase[req.params.id]
+  const foundURL = getURLFromID(req.params.id)
   if (!foundURL) {
     return res.send("<html><p>That short URL id does not exist</p></html>")
   }
 
-  const user = getUserByCookie(req, users)
-  if (!user) {
-    return res.send("<html><p>You do not have permission to view this URL</p></html>")
-  }
-
-  if (!userOwnsURL(user, foundURL)) {
+  const user = getUserByCookie(req)
+  if (!user || !userOwnsURL(user, foundURL)) {
     return res.send("<html><p>You do not have permission to view this URL</p></html>")
   }
 
@@ -205,12 +186,12 @@ app.put("/urls/:id", (req, res) => {
     return res.send('<html><p>Error: invalid URL</p></html')
   }
 
-  const userByCookie = getUserByCookie(req, users)
+  const userByCookie = getUserByCookie(req)
   if (!userByCookie) {
     return res.redirect('/login')
   }
 
-  const url = urlDatabase[id]
+  const url = getURLFromID(id)
   if (!url) {
     return res.send('<html><p>Error: URL not found</p></html')
   }
@@ -219,6 +200,7 @@ app.put("/urls/:id", (req, res) => {
     return res.redirect('/login')
   }
 
+  // TODO: Check if this works
   url.longURL = longURL
   return res.redirect(`/urls`)
 })
@@ -226,22 +208,23 @@ app.put("/urls/:id", (req, res) => {
 app.delete("/urls/:id/delete", (req, res) => {
   const id = req.params.id
 
-  const url = urlDatabase[id]
+  const url = getURLFromID(id)
   if (!url) {
     return res.send('<html><p>Error: URL not found</p></html>')
   }
 
-  const userByCookie = getUserByCookie(req, users)
+  const userByCookie = getUserByCookie(req)
   if (!userByCookie || !userOwnsURL(userByCookie, url)) {
     return res.send('<html><p>You must be the owner of this URL to delete it</p></html>')
   }
 
-  delete urlDatabase[req.params.id]
+  // TODO Check if this works
+  deleteURL(url)
   return res.redirect('/urls')
 })
 
 app.get("/u/:id", (req, res) => {
-  const foundURL = urlDatabase[req.params.id]
+  const foundURL = getURLFromID(req.params.id)
   if (!foundURL) {
     return res.send("<html><p>That short URL id does not exist</p></html>")
   }
