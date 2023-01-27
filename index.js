@@ -200,7 +200,6 @@ app.put("/urls/:id", (req, res) => {
     return res.redirect('/login')
   }
 
-  // TODO: Check if this works
   url.longURL = longURL
   return res.redirect(`/urls`)
 })
@@ -218,7 +217,6 @@ app.delete("/urls/:id/delete", (req, res) => {
     return res.send('<html><p>You must be the owner of this URL to delete it</p></html>')
   }
 
-  // TODO Check if this works
   deleteURL(url)
   return res.redirect('/urls')
 })
