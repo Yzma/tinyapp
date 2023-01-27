@@ -240,18 +240,14 @@ app.put("/urls/:id", (req, res) => {
 app.delete("/urls/:id/delete", (req, res) => {
   const id = req.params.id
 
-  const userByCookie = getUserByCookie(req, users)
-  if (!userByCookie) {
-    return res.redirect('/login')
-  }
-
   const url = urlDatabase[id]
   if (!url) {
     return res.send('Error: URL not found')
   }
 
-  if (!userOwnsURL(userByCookie, url)) {
-    return res.redirect('/login')
+  const userByCookie = getUserByCookie(req, users)
+  if (!userByCookie || !userOwnsURL(userByCookie, url)) {
+    return res.send('<html><p>You must be the owner of this URL to delete it</p></html>')
   }
 
   delete urlDatabase[req.params.id]
