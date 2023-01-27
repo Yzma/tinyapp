@@ -1,5 +1,7 @@
 require("dotenv").config()
 
+const users = require('./database/userDB')
+const urlDatabase = require('./database/urlDB')
 const { getUserByCookie, getUserByEmail, getURLSForUser, userOwnsURL, } = require('./util/userHelper')
 const { isValid, generateUid } = require('./util/util')
 
@@ -21,24 +23,6 @@ app.use(methodOverride('_method'))
 
 app.set("view engine", "ejs")
 
-const users = {}
-
-const urlDatabase = {
-  b6UTxQ: {
-    id: 'b6UTxQ',
-    longURL: "http://www.lighthouselabs.ca",
-    userID: "aJ48lW",
-    totalTimesVisited: 0,
-    uniqueVisitors: []
-  },
-  i3BoGr: {
-    id: 'i3BoGr',
-    longURL: "https://www.google.ca",
-    userID: "aJ48lW",
-    totalTimesVisited: 0,
-    uniqueVisitors: []
-  },
-}
 
 app.get("/", (req, res) => {
   return res.redirect('/urls')
