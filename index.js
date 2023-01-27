@@ -56,6 +56,13 @@ app.get("/urldatabase", (req, res) => {
  * Login Route
  */
 
+/*
+
+    TODO: Instead of copying and pasting code, use route "guards" to protect routes with the express "next" method in routes
+
+    
+*/
+
 app.get("/login", (req, res) => {
   const userByCookie = getUserByCookie(req, users)
   if (!userByCookie) {
