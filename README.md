@@ -9,12 +9,15 @@ TinyApp is a full stack web application built with Node and Express that allows 
 - EJS
 - bcryptjs
 - cookie-session
+- dotenv
 
 ## Getting Started
 
-- Install all dependencies (using the `npm install` command).
-- Run the web server using the `npm run start` command.
-  - You can also use `npm run dev` to start the server with nodemon.
+  1. Download or clone the project (`git clone git@github.com:Yzma/tinyapp.git`)
+  2. Navigate into the project directory and install all dependencies by running the `npm install` command in your terminal
+  3. Rename the file '.env.example' to '.env'
+  4. Fill out all of the environment variables to your liking
+  5. Run `npm run start` to start the web server
 
 ## Screenshots
 
