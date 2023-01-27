@@ -7,7 +7,7 @@ const bcrypt = require("bcryptjs")
 const methodOverride = require('method-override')
 
 const app = express()
-const PORT = 8080
+const PORT = process.env.PORT
 
 app.use(cookieSession({
   name: 'session',
