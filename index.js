@@ -1,6 +1,8 @@
 require("dotenv").config()
 
-const { getUserByCookie, getUserByEmail, getURLSForUser, isValid, userOwnsURL, generateUid } = require('./helper')
+const { getUserByCookie, getUserByEmail, getURLSForUser, userOwnsURL, } = require('./util/userHelper')
+const { isValid, generateUid } = require('./util/util')
+
 const express = require("express")
 const cookieSession = require('cookie-session')
 const bcrypt = require("bcryptjs")

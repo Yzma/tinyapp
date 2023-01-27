@@ -55,39 +55,20 @@ const getURLSForUser = function(user, urlDatabase) {
   return result
 }
 
+/**
+ * Checks if the provided URLs User ID matches the provided Users ID
+ *
+ * @param {Object} user The user to check against the URL
+ * @param {Object} url The URL to check against
+ * @returns Returns true if the provided URLs User ID matches the Users ID. False otherwise
+ */
 const userOwnsURL = function(user, url) {
   return user.id === url.userID
-}
-
-/**
- * Used to check if the passed in parameters are not null and not empty.
- * This method should be used to validate Strings and Arrays
- *
- * @param  {...any} params The parameters/variables to check their not null and not empty
- * @returns true if all parameters passed in are not null and not empty. False otherwise
- */
-const isValid = function(...params) {
-  for (let i of params) {
-    if ((!i || i.length === 0)) {
-      return false
-    }
-  }
-  return true
-}
-
-/**
- * Returns a unique string that is used to generate IDs
- * @returns A unique string
- */
-const generateUid = function() {
-  return Math.floor((1 + Math.random()) * 0x10000).toString(16)
 }
 
 module.exports = {
   getUserByCookie,
   getUserByEmail,
   getURLSForUser,
-  isValid,
   userOwnsURL,
-  generateUid
 }
