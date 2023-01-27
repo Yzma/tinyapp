@@ -74,16 +74,16 @@ app.post("/login", (req, res) => {
   const { email, password } = req.body
 
   if (!isValid(email, password)) {
-    return res.status(400).send("Error: Invalid email or password")
+    return res.status(400).send("<html><p>Error: Invalid email or password</p></html")
   }
 
   const user = getUserByEmail(email, users)
   if (!user) {
-    return res.status(400).send("Error: Account with provided email does not exist")
+    return res.status(400).send("<html><p>Error: Account with provided email does not exist</p></html")
   }
 
   if (!bcrypt.compareSync(password, user.password)) {
-    return res.status(400).send("Error: Invalid password")
+    return res.status(400).send("<html><p>Error: Invalid password</p></html")
   }
 
   req.session.userID = user.id
@@ -115,12 +115,12 @@ app.post("/register", (req, res) => {
   const { email, password } = req.body
 
   if (!isValid(email, password)) {
-    return res.status(400).send("Error: Invalid email or password")
+    return res.status(400).send("<html><p>Error: Invalid email or password</p></html")
   }
 
   const user = getUserByEmail(email, users)
   if (user) {
-    return res.status(400).send("Error: Account with that email already exists")
+    return res.status(400).send("<html><p>Error: Account with that email already exists</p></html")
   }
 
   const id = generateUid()
@@ -161,7 +161,7 @@ app.post("/urls", (req, res) => {
 
   const longURL = req.body.longURL
   if (!isValid(longURL)) {
-    return res.send('Error: invalid URL')
+    return res.send('<html><p>Error: invalid URL</p></html')
   }
 
   const id = generateUid()
@@ -216,7 +216,7 @@ app.put("/urls/:id", (req, res) => {
   const longURL = req.body.longURL
 
   if (!isValid(longURL)) {
-    return res.send('Error: invalid URL')
+    return res.send('<html><p>Error: invalid URL</p></html')
   }
 
   const userByCookie = getUserByCookie(req, users)
@@ -226,7 +226,7 @@ app.put("/urls/:id", (req, res) => {
 
   const url = urlDatabase[id]
   if (!url) {
-    return res.send('Error: URL not found')
+    return res.send('<html><p>Error: URL not found</p></html')
   }
 
   if (!userOwnsURL(userByCookie, url)) {
@@ -242,7 +242,7 @@ app.delete("/urls/:id/delete", (req, res) => {
 
   const url = urlDatabase[id]
   if (!url) {
-    return res.send('Error: URL not found')
+    return res.send('<html><p>Error: URL not found</p></html>')
   }
 
   const userByCookie = getUserByCookie(req, users)
