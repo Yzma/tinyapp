@@ -1,3 +1,5 @@
+require("dotenv").config()
+
 const { getUserByCookie, getUserByEmail, getURLSForUser, isValid, userOwnsURL, generateUid } = require('./helper')
 const express = require("express")
 const cookieSession = require('cookie-session')
@@ -9,7 +11,7 @@ const PORT = 8080
 
 app.use(cookieSession({
   name: 'session',
-  keys: ["SomeSecretKeyThatShouldNotBeInGitHub"],
+  keys: [process.env.COOKIE_SECRET],
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }))
 app.use(express.urlencoded({ extended: true }))
