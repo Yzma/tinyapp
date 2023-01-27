@@ -196,12 +196,10 @@ app.get("/urls/:id", (req, res) => {
 
   const user = getUserByCookie(req, users)
   if (!user) {
-    console.log('1 here')
     return res.send("<html><p>You do not have permission to view this URL</p></html>")
   }
 
   if (!userOwnsURL(user, foundURL)) {
-    console.log('2 here')
     return res.send("<html><p>You do not have permission to view this URL</p></html>")
   }
 
