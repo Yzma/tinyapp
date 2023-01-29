@@ -25,7 +25,7 @@ app.use(methodOverride('_method'))
 app.set("view engine", "ejs")
 
 app.get("/", (req, res) => {
-  return res.redirect('/urls')
+  return res.redirect('/login')
 })
 
 app.use(debugRoute)
