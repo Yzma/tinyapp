@@ -20,16 +20,16 @@ router.post("/login", (req, res) => {
   const { email, password } = req.body
 
   if (!isValid(email, password)) {
-    return res.status(400).send("<html><p>Error: Invalid email or password</p></html")
+    return res.status(400).send("<html><p>Error: Invalid email or password</p></html>")
   }
 
   const user = getUserByEmail(email)
   if (!user) {
-    return res.status(400).send("<html><p>Error: Account with provided email does not exist</p></html")
+    return res.status(400).send("<html><p>Error: Account with provided email does not exist</p></html>")
   }
 
   if (!bcrypt.compareSync(password, user.password)) {
-    return res.status(400).send("<html><p>Error: Invalid password</p></html")
+    return res.status(400).send("<html><p>Error: Invalid password</p></html>")
   }
 
   req.session.userID = user.id

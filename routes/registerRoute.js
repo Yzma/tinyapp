@@ -20,12 +20,12 @@ router.post("/register", (req, res) => {
   const { email, password } = req.body
 
   if (!isValid(email, password)) {
-    return res.status(400).send("<html><p>Error: Invalid email or password</p></html")
+    return res.status(400).send("<html><p>Error: Invalid email or password</p></html>")
   }
 
   const user = getUserByEmail(email)
   if (user) {
-    return res.status(400).send("<html><p>Error: Account with that email already exists</p></html")
+    return res.status(400).send("<html><p>Error: Account with that email already exists</p></html>")
   }
 
   const newUser = createUser(email, password)

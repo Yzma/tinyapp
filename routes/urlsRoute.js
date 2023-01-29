@@ -26,7 +26,7 @@ router.post("/urls", (req, res) => {
 
   const longURL = req.body.longURL
   if (!isValid(longURL)) {
-    return res.send('<html><p>Error: invalid URL</p></html')
+    return res.send('<html><p>Error: invalid URL</p></html>')
   }
 
   const newURL = createURL(userByCookie, longURL)
@@ -70,7 +70,7 @@ router.put("/urls/:id", (req, res) => {
   const longURL = req.body.longURL
 
   if (!isValid(longURL)) {
-    return res.send('<html><p>Error: invalid URL</p></html')
+    return res.send('<html><p>Error: invalid URL</p></html>')
   }
 
   const userByCookie = getUserByCookie(req)
@@ -80,7 +80,7 @@ router.put("/urls/:id", (req, res) => {
 
   const url = getURLFromID(id)
   if (!url) {
-    return res.send('<html><p>Error: URL not found</p></html')
+    return res.send('<html><p>Error: URL not found</p></html>')
   }
 
   if (!userOwnsURL(userByCookie, url)) {
