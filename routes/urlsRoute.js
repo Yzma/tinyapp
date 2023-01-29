@@ -7,7 +7,7 @@ const router = express.Router()
 router.get("/urls", (req, res) => {
   const userByCookie = getUserByCookie(req)
   if (!userByCookie) {
-    return res.redirect('/login')
+    return res.status(401).send("<html><p>You do not have permission to view URLs</p></html>")
   }
 
   const urls = getURLSForUser(userByCookie)
