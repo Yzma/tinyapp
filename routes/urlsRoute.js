@@ -73,18 +73,14 @@ router.put("/urls/:id", (req, res) => {
     return res.send('<html><p>Error: invalid URL</p></html>')
   }
 
-  const userByCookie = getUserByCookie(req)
-  if (!userByCookie) {
-    return res.redirect('/login')
-  }
-
   const url = getURLFromID(id)
   if (!url) {
     return res.send('<html><p>Error: URL not found</p></html>')
   }
 
-  if (!userOwnsURL(userByCookie, url)) {
-    return res.redirect('/login')
+  const userByCookie = getUserByCookie(req)
+  if (!userByCookie || !userOwnsURL(userByCookie, url)) {
+    return res.send('<html><p>You must be the owner of this URL to delete it</p></html>')
   }
 
   url.longURL = longURL
